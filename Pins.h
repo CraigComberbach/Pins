@@ -18,10 +18,10 @@
 struct PIN_DEFINITION
 {
 	int mask;
-	int TRISregister;
-	int ODCregister;
-	int LATregister;
-	int PORTregister;
+	volatile unsigned int *TRISregister;
+	volatile unsigned int *ODCregister;
+	volatile unsigned int *LATregister;
+	volatile unsigned int *PORTregister;
 };
 
 /***********State Machine Definitions************/

@@ -23,11 +23,11 @@ v0.0.0	2013-07-20  Craig Comberbach	Compiler: XC16 v1.11	IDE: MPLABx 1.70	Tool: 
 
 /************* Semantic Versioning***************/
 #if PINS_MAJOR != 0
-	#warning "Pins.c has had a change that loses some previously supported functionality"
+	#error "Pins.c has had a change that loses some previously supported functionality"
 #elif PINS_MINOR != 1
-	#warning "Pins.c has new features that this code may benefit from"
+	#error "Pins.c has new features that this code may benefit from"
 #elif PINS_PATCH != 0
-	#warning "Pins.c has had a bug fix, you should check to see that we weren't relying on a bug for functionality"
+	#error "Pins.c has had a bug fix, you should check to see that we weren't relying on a bug for functionality"
 #endif
 
 /************Arbitrary Functionality*************/
@@ -59,10 +59,10 @@ void Pin_Write(struct PIN_DEFINITION pin, int newState)
 	switch(newState)
 	{
 		case 0:
-			pin.LATregister &= ~pin.mask;
+			*pin.LATregister &= ~pin.mask;
 			return;
 		case 1:
-			pin.LATregister |= pin.mask;
+			*pin.LATregister |= pin.mask;
 			return;
 		default:
 			return;
@@ -71,7 +71,7 @@ void Pin_Write(struct PIN_DEFINITION pin, int newState)
 
 int Pin_Read(struct PIN_DEFINITION pin)
 {
-	if(pin.PORTregister & pin.mask)
+	if(*pin.PORTregister & pin.mask)
 		return 1;
 	else
 		return 0;
@@ -83,10 +83,10 @@ void Pin_Set_ODC(struct PIN_DEFINITION pin, int newState)
 	switch(newState)
 	{
 		case 0:
-			pin.ODCregister &= ~pin.mask;
+			*pin.ODCregister &= ~pin.mask;
 			return;
 		case 1:
-			pin.ODCregister |= pin.mask;
+			*pin.ODCregister |= pin.mask;
 			return;
 		default:
 			return;
@@ -95,7 +95,7 @@ void Pin_Set_ODC(struct PIN_DEFINITION pin, int newState)
 
 int Pin_Get_ODC(struct PIN_DEFINITION pin)
 {
-	if(pin.ODCregister & pin.mask)
+	if(*pin.ODCregister & pin.mask)
 		return 1;
 	else
 		return 0;
@@ -106,10 +106,10 @@ void Pin_Set_TRIS(struct PIN_DEFINITION pin, int newState)
 	switch(newState)
 	{
 		case 0:
-			pin.TRISregister &= ~pin.mask;
+			*pin.TRISregister &= ~pin.mask;
 			return;
 		case 1:
-			pin.TRISregister |= pin.mask;
+			*pin.TRISregister |= pin.mask;
 			return;
 		default:
 			return;
@@ -118,7 +118,7 @@ void Pin_Set_TRIS(struct PIN_DEFINITION pin, int newState)
 
 int Pin_Get_TRIS(struct PIN_DEFINITION pin)
 {
-	if(pin.TRISregister & pin.mask)
+	if(*pin.TRISregister & pin.mask)
 		return 1;
 	else
 		return 0;
