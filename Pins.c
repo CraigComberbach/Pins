@@ -22,9 +22,7 @@ v0.0.0	2013-07-20  Craig Comberbach	Compiler: XC16 v1.11	IDE: MPLABx 1.70	Tool: 
 #include "Pins.h"
 
 /************* Semantic Versioning***************/
-#ifndef PINS_LIBRARY
-	#error "You need to include the Pins library for this code to compile"
-#elif PINS_MAJOR != 0
+#if PINS_MAJOR != 0
 	#warning "Pins.c has had a change that loses some previously supported functionality"
 #elif PINS_MINOR != 1
 	#warning "Pins.c has new features that this code may benefit from"
