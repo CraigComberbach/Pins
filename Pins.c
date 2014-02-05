@@ -42,7 +42,7 @@ v0.0.0	2013-07-20  Craig Comberbach	Compiler: XC16 v1.11	IDE: MPLABx 1.70	Tool: 
 
 void Pin_Initialize(struct PIN_DEFINITION pin, int latch, int odc, int tris)
 {
-	//Set latch first (Needs to be done before setting TRIS
+	//Set latch first (Needs to be done before setting TRIS)
 	Pin_Write(pin, latch);
 
 	//Set ODC
@@ -51,6 +51,24 @@ void Pin_Initialize(struct PIN_DEFINITION pin, int latch, int odc, int tris)
 	//Set TRIS - Needs/should) to be done last
 	Pin_Set_TRIS(pin, tris);
 
+	return;
+}
+
+void Pin_Low(struct PIN_DEFINITION pin)
+{
+	*pin.LATregister &= ~pin.mask;
+	return;
+}
+
+void Pin_High(struct PIN_DEFINITION pin)
+{
+	*pin.LATregister |= pin.mask;
+	return;
+}
+
+void Pin_Toggle(struct PIN_DEFINITION pin)
+{
+	*pin.LATregister ^= pin.mask;
 	return;
 }
 
