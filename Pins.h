@@ -13,6 +13,26 @@
 #define OPEN_DRAIN	1
 
 /*************    Enumeration     ***************/
+enum
+{
+	Rx0 = 0x0001,
+	Rx1 = 0x0002,
+	Rx2 = 0x0004,
+	Rx3 = 0x0008,
+	Rx4 = 0x0010,
+	Rx5 = 0x0020,
+	Rx6 = 0x0040,
+	Rx7 = 0x0080,
+	Rx8 = 0x0100,
+	Rx9 = 0x0200,
+	Rx10 = 0x0400,
+	Rx11 = 0x0800,
+	Rx12 = 0x1000,
+	Rx13 = 0x2000,
+	Rx14 = 0x4000,
+	Rx15 = 0x8000
+};
+
 /*************Structure Definitions**************/
 //Pin structure definition
 struct PIN_DEFINITION
