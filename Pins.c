@@ -38,44 +38,63 @@ v0.0.0	2013-07-20  Craig Comberbach	Compiler: XC16 v1.11	IDE: MPLABx 1.70	Tool: 
 /*************    Enumeration     ***************/
 /***********State Machine Definitions************/
 /*************  Global Variables  ***************/
+//Pin structure definition
+struct PIN
+{
+	int mask;
+	volatile unsigned int *TRISregister;
+	volatile unsigned int *ODCregister;
+	volatile unsigned int *LATregister;
+	volatile unsigned int *PORTregister;
+} pin[NUMBER_OF_PINS];
+
 /*************Function  Prototypes***************/
 /************* Device Definitions ***************/
 /************* Module Definitions ***************/
 /************* Other  Definitions ***************/
 
-void Pin_Initialize(struct PIN_DEFINITION pin, int latch, int odc, int tris)
+void Pin_Definition(int pinID, int mask, volatile unsigned int *TRISregister, volatile unsigned int *ODCregister, volatile unsigned int *LATregister, volatile unsigned int *PORTregister)
+{
+	pin[pinID].mask = mask;
+	pin[pinID].LATregister = LATregister;
+	pin[pinID].ODCregister = ODCregister;
+	pin[pinID].PORTregister = PORTregister;
+	pin[pinID].TRISregister = TRISregister;
+}
+
+void Pin_Initialize(int pinID, int latch, int odc, int tris)
 {
 	//Set latch first (Needs to be done before setting TRIS)
-	Pin_Write(pin, latch);
+	Pin_Write(pinID, latch);
 
 	//Set ODC
-	Pin_Set_ODC(pin, odc);
+	Pin_Set_ODC(pinID, odc);
 
 	//Set TRIS - Needs/should) to be done last
-	Pin_Set_TRIS(pin, tris);
+	Pin_Set_TRIS(pinID, tris);
 
 	return;
 }
 
-void Pin_Low(struct PIN_DEFINITION pin)
+void Pin_Low(int pinID)
 {
-	*pin.LATregister &= ~pin.mask;
+	*pinID.LATregister &= ~pinID.mask;
 	return;
 }
 
-void Pin_High(struct PIN_DEFINITION pin)
+void Pin_High(int pinID)
 {
 	*pin.LATregister |= pin.mask;
 	return;
 }
 
-void Pin_Toggle(struct PIN_DEFINITION pin)
+void Pin_Toggle(int pinID)
 {
 	*pin.LATregister ^= pin.mask;
 	return;
 }
 
-void Pin_Write(struct PIN_DEFINITION pin, int newState)
+void Pin_Write(int pinID, int newState)
 {
 	switch(newState)
 	{
@@ -90,7 +109,7 @@ void Pin_Write(struct PIN_DEFINITION pin, int newState)
 	}
 }
 
-int Pin_Read(struct PIN_DEFINITION pin)
+int Pin_Read(int pinID)
 {
 	if(*pin.PORTregister & pin.mask)
 		return 1;
@@ -98,7 +117,7 @@ int Pin_Read(struct PIN_DEFINITION pin)
 		return 0;
 }
 
-void Pin_Set_ODC(struct PIN_DEFINITION pin, int newState)
+void Pin_Set_ODC(int pinID, int newState)
 {
 	//Set ODC register
 	switch(newState)
@@ -114,7 +133,7 @@ void Pin_Set_ODC(struct PIN_DEFINITION pin, int newState)
 	}
 }
 
-int Pin_Get_ODC(struct PIN_DEFINITION pin)
+int Pin_Get_ODC(int pinID)
 {
 	if(*pin.ODCregister & pin.mask)
 		return 1;
@@ -122,7 +141,7 @@ int Pin_Get_ODC(struct PIN_DEFINITION pin)
 		return 0;
 }
 
-void Pin_Set_TRIS(struct PIN_DEFINITION pin, int newState)
+void Pin_Set_TRIS(int pinID, int newState)
 {
 	switch(newState)
 	{
@@ -137,10 +156,12 @@ void Pin_Set_TRIS(struct PIN_DEFINITION pin, int newState)
 	}
 }
 
-int Pin_Get_TRIS(struct PIN_DEFINITION pin)
+int Pin_Get_TRIS(int pinID)
 {
 	if(*pin.TRISregister & pin.mask)
 		return 1;
 	else
 		return 0;
 }
+
+The plan is to use a unique pin designator instead of passing the variable itself around.
