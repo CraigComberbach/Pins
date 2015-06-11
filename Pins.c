@@ -6,6 +6,8 @@ Code assumptions:
 Purpose:				Read the Thermistor inputs
 
 Version History:
+	Retooled entirely. It now uses unique designators instead of passing structures around
+	This simplified initialization, as well as passing pins as an argument to functions (Critical for use with the CTMU & A2D libraries)
 v1.0.0	2014-02-05	Craig Comberbach	Compiler: C30 v3.31	Optimization: 0	IDE: MPLABx 1.95	Tool: IDC3	Computer: Intel Core i5-2540 CPU 2.6 GHz, 3.95 GB RAM, Windows 7 64 bit Professional SP1
 	Added Pin Low, High, and Toggle
 	Tested, this is the official release
@@ -25,7 +27,7 @@ v0.0.0	2013-07-20  Craig Comberbach	Compiler: XC16 v1.11	IDE: MPLABx 1.70	Tool: 
 #include "Pins.h"
 
 /************* Semantic Versioning***************/
-#if PINS_MAJOR != 1
+#if PINS_MAJOR != 2
 	#error "Pins.c has had a change that loses some previously supported functionality"
 #elif PINS_MINOR != 0
 	#error "Pins.c has new features that this code may benefit from"
@@ -78,19 +80,22 @@ void Pin_Initialize(int pinID, int latch, int odc, int tris)
 
 void Pin_Low(int pinID)
 {
-	*pinID.LATregister &= ~pinID.mask;
+	*pin[pinID].LATregister &= ~pin[pinID].mask;
+//	*pinID.LATregister &= ~pinID.mask;
 	return;
 }
 
 void Pin_High(int pinID)
 {
-	*pin.LATregister |= pin.mask;
+	*pin[pinID].LATregister |= pin[pinID].mask;
+//	*pin.LATregister |= pin.mask;
 	return;
 }
 
 void Pin_Toggle(int pinID)
 {
-	*pin.LATregister ^= pin.mask;
+	*pin[pinID].LATregister ^= pin[pinID].mask;
+//	*pin.LATregister ^= pin.mask;
 	return;
 }
 
@@ -99,10 +104,12 @@ void Pin_Write(int pinID, int newState)
 	switch(newState)
 	{
 		case 0:
-			*pin.LATregister &= ~pin.mask;
+			*pin[pinID].LATregister &= ~pin[pinID].mask;
+//			*pin.LATregister &= ~pin.mask;
 			return;
 		case 1:
-			*pin.LATregister |= pin.mask;
+			*pin[pinID].LATregister |= pin[pinID].mask;
+//			*pin.LATregister |= pin.mask;
 			return;
 		default:
 			return;
@@ -111,7 +118,8 @@ void Pin_Write(int pinID, int newState)
 
 int Pin_Read(int pinID)
 {
-	if(*pin.PORTregister & pin.mask)
+	if(*pin[pinID].PORTregister & pin[pinID].mask)
+//	if(*pin.PORTregister & pin.mask)
 		return 1;
 	else
 		return 0;
@@ -123,10 +131,12 @@ void Pin_Set_ODC(int pinID, int newState)
 	switch(newState)
 	{
 		case 0:
-			*pin.ODCregister &= ~pin.mask;
+			*pin[pinID].ODCregister &= ~pin[pinID].mask;
+//			*pin.ODCregister &= ~pin.mask;
 			return;
 		case 1:
-			*pin.ODCregister |= pin.mask;
+			*pin[pinID].ODCregister |= pin[pinID].mask;
+//			*pin.ODCregister |= pin.mask;
 			return;
 		default:
 			return;
@@ -135,7 +145,8 @@ void Pin_Set_ODC(int pinID, int newState)
 
 int Pin_Get_ODC(int pinID)
 {
-	if(*pin.ODCregister & pin.mask)
+	if(*pin[pinID].ODCregister & pin[pinID].mask)
+//	if(*pin.ODCregister & pin.mask)
 		return 1;
 	else
 		return 0;
@@ -146,10 +157,12 @@ void Pin_Set_TRIS(int pinID, int newState)
 	switch(newState)
 	{
 		case 0:
-			*pin.TRISregister &= ~pin.mask;
+			*pin[pinID].TRISregister &= ~pin[pinID].mask;
+//			*pin.TRISregister &= ~pin.mask;
 			return;
 		case 1:
-			*pin.TRISregister |= pin.mask;
+			*pin[pinID].TRISregister |= pin[pinID].mask;
+//			*pin.TRISregister |= pin.mask;
 			return;
 		default:
 			return;
@@ -158,10 +171,9 @@ void Pin_Set_TRIS(int pinID, int newState)
 
 int Pin_Get_TRIS(int pinID)
 {
-	if(*pin.TRISregister & pin.mask)
+	if(*pin[pinID].TRISregister & pin[pinID].mask)
+//	if(*pin.TRISregister & pin.mask)
 		return 1;
 	else
 		return 0;
 }
-
-The plan is to use a unique pin designator instead of passing the variable itself around.
