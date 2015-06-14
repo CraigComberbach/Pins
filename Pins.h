@@ -2,6 +2,26 @@
 #define	PINS_H
 /*
 Instructions for adding to a new project:
+Add the code with the header "Add to config file header" to the config.h file, and the code labeled "Add to config file"
+to config.c. The pin definitions (PIN_DEFINITIONS) that are placed into config.h can be in any order and do not need to
+line up incrementally based on the actual pins. This is because they must be declared and matched to a PIN_DEFINITION.
+
+During initialization, you need to create a definition of each pin so that they can be properly linked during runtime:
+	Eg. Pin_Definition(PIN_RA0,	Rx0, &TRISA, &ODCA, &LATA, &PORTA); //RA0
+This matches the unique defined PIN_DEFINITION with the addresses of the pins related registers. After that, the pins should
+be initialized with the desired starting conditions:
+	Eg. Pin_Initialize(PIN_RA0,	LOW, PUSH_PULL, INPUT);	//RA0
+This will ensure the pins are setup correctly and initialized so as to not cause any problems later in the program.
+
+The code will operate on the pins a few cycles slower than a direct call would, however, the benefit is that pins can be
+universally remapped quickly and easily and most pins do not need to be changed instantaneously.
+
+The functions Pin_Low and Pin_High allow the pin to be set specifically
+The function Pin_Toggle allows a pins output to be toggled
+The function Pin_Write allows the output to be determined at run time if it isn't known at compile time
+The functions Pin_Set_ODC and Pin_Set_TRIS allow the Open-Drain and Tristate to be changed during run time
+The functions Pin_Get_ODC and Pin_Get_TRIS allow the current Open-Drain and Tristate values to be read during run time
+The function Pin_Read allows the current pin state to be read in
 */
 
 /***********Add to config file header************/
@@ -74,16 +94,6 @@ enum
 };
 
 /*************Structure Definitions**************/
-//Pin structure definition
-int
-{
-	int mask;
-	volatile unsigned int *TRISregister;
-	volatile unsigned int *ODCregister;
-	volatile unsigned int *LATregister;
-	volatile unsigned int *PORTregister;
-};
-
 /***********State Machine Definitions************/
 /*************Function  Prototypes***************/
 
