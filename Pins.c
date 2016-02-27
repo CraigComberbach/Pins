@@ -63,6 +63,8 @@ void Pin_Definition(int pinID, int mask, volatile unsigned int *TRISregister, vo
 	pin[pinID].ODCregister = ODCregister;
 	pin[pinID].PORTregister = PORTregister;
 	pin[pinID].TRISregister = TRISregister;
+
+	return;
 }
 
 void Pin_Initialize(int pinID, int latch, int odc, int tris)
@@ -101,10 +103,10 @@ void Pin_Write(int pinID, int newState)
 {
 	switch(newState)
 	{
-		case 0:
+		case LOW:
 			*pin[pinID].LATregister &= ~pin[pinID].mask;
 			return;
-		case 1:
+		case HIGH:
 			*pin[pinID].LATregister |= pin[pinID].mask;
 			return;
 		default:
@@ -115,9 +117,9 @@ void Pin_Write(int pinID, int newState)
 int Pin_Read(int pinID)
 {
 	if(*pin[pinID].PORTregister & pin[pinID].mask)
-		return 1;
+		return HIGH;
 	else
-		return 0;
+		return LOW;
 }
 
 void Pin_Set_ODC(int pinID, int newState)
@@ -125,10 +127,10 @@ void Pin_Set_ODC(int pinID, int newState)
 	//Set ODC register
 	switch(newState)
 	{
-		case 0:
+		case PUSH_PULL:
 			*pin[pinID].ODCregister &= ~pin[pinID].mask;
 			return;
-		case 1:
+		case OPEN_DRAIN:
 			*pin[pinID].ODCregister |= pin[pinID].mask;
 			return;
 		default:
@@ -139,19 +141,19 @@ void Pin_Set_ODC(int pinID, int newState)
 int Pin_Get_ODC(int pinID)
 {
 	if(*pin[pinID].ODCregister & pin[pinID].mask)
-		return 1;
+		return OPEN_DRAIN;
 	else
-		return 0;
+		return PUSH_PULL;
 }
 
 void Pin_Set_TRIS(int pinID, int newState)
 {
 	switch(newState)
 	{
-		case 0:
+		case OUTPUT:
 			*pin[pinID].TRISregister &= ~pin[pinID].mask;
 			return;
-		case 1:
+		case INPUT:
 			*pin[pinID].TRISregister |= pin[pinID].mask;
 			return;
 		default:
@@ -162,7 +164,7 @@ void Pin_Set_TRIS(int pinID, int newState)
 int Pin_Get_TRIS(int pinID)
 {
 	if(*pin[pinID].TRISregister & pin[pinID].mask)
-		return 1;
+		return INPUT;
 	else
-		return 0;
+		return OUTPUT;
 }
