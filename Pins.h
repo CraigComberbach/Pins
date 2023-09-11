@@ -50,7 +50,7 @@ enum PIN_DEFINITIONS
 
 //Pins Library
 #define PINS_MAJOR	2
-#define PINS_MINOR	0
+#define PINS_MINOR	1
 #define PINS_PATCH	0
 */
 
@@ -62,15 +62,27 @@ enum PIN_DEFINITIONS
  */
 
 /************* Semantic Versioning***************/
-#define PINS_LIBRARY
+#define PINS_DRIVER
 
 /*************   Magic  Numbers   ***************/
-#define LOW			0
-#define HIGH		1
-#define OUTPUT		0
-#define INPUT		1
-#define PUSH_PULL	0
-#define OPEN_DRAIN	1
+enum
+{
+	LOW = 0,
+	HIGH = 1
+	
+};
+
+enum
+{
+	OUTPUT = 0,
+	INPUT = 1
+};
+
+enum
+{
+	PUSH_PULL = 0,
+	OPEN_DRAIN = 1
+};
 
 /*************    Enumeration     ***************/
 enum
@@ -106,7 +118,7 @@ enum
  * @param LATregister Address of Latch register
  * @param PORTregister Address of Port register
  */
-void Pin_Definition(int pinID, int mask, volatile unsigned int *TRISregister, volatile unsigned int *ODCregister, volatile unsigned int *LATregister, volatile unsigned int *PORTregister);
+void Pin_Definition(int16_t pinID, int16_t mask, volatile uint16_t *TRISregister, volatile uint16_t *ODCregister, volatile uint16_t *LATregister, volatile uint16_t *PORTregister);
 
 /**
  * Initializes a pin
@@ -115,66 +127,73 @@ void Pin_Definition(int pinID, int mask, volatile unsigned int *TRISregister, vo
  * @param odc The desired state the ODC should be in (1 = Open-Drain, 0 = Push-Pull)
  * @param tris The desired state the TRIS should start in (1 = Input, 0 = Output)
  */
-void Pin_Initialize(int pinID, int latch, int odc, int tris);
+void Pin_Initialize(int16_t pinID, int16_t latch, int16_t odc, int16_t tris);
 
 /**
  * Sets the pin low (LAT register)
  * @param pinID The unique ID that this pin is referred to as
  */
-void Pin_Low(int pinID);
+void Pin_Low(int16_t pinID);
 
 /**
  * Sets the pin high (LAT register)
  * @param pinID The unique ID that this pin is referred to as
  */
-void Pin_High(int pinID);
+void Pin_High(int16_t pinID);
 
 /**
  * Toggles the pins (LAT register)
  * @param pinID The unique ID that this pin is referred to as
  */
-void Pin_Toggle(int pinID);
+void Pin_Toggle(int16_t pinID);
 
 /**
  * Allows programatically setting of a pin (LAT register)
  * @param pinID The unique ID that this pin is referred to as
  * @param newState (1 = High, 0 = Low)
  */
-void Pin_Write(int pinID, int newState);
+void Pin_Set_Latch(int16_t pinID, int16_t newState);
 
 /**
  * Sets the ODC register
  * @param pinID The unique ID that this pin is referred to as
  * @param newState (1 = Open-Drain, 0 = Push-Pull)
  */
-void Pin_Set_ODC(int pinID, int newState);
+void Pin_Set_ODC(int16_t pinID, int16_t newState);
 
 /**
  * Sets the TRIS register
  * @param pinID The unique ID that this pin is referred to as
  * @param newState (1 = Input, 0 = Output)
  */
-void Pin_Set_TRIS(int pinID, int newState);
+void Pin_Set_TRIS(int16_t pinID, int16_t newState);
 
 /**
  * Reads the current pin (PORT register)
  * @param pinID The unique ID that this pin is referred to as
  * @return (1 = High, 0 = Low)
  */
-int Pin_Read(int pinID);
+int16_t Pin_Read(int16_t pinID);
 
 /**
  * Reads the current ODC register
  * @param pinID The unique ID that this pin is referred to as
  * @return the current ODC value (1 = Open-Drain, 0 = Push-Pull)
  */
-int Pin_Get_ODC(int pinID);
+int16_t Pin_Get_ODC(int16_t pinID);
 
 /**
  * Reads the current TRIS register
  * @param pinID The unique ID that this pin is referred to as
  * @return (1 = Input, 0 = Output)
  */
-int Pin_Get_TRIS(int pinID);
+int16_t Pin_Get_TRIS(int16_t pinID);
+
+/**
+ * Reads the current LAT register
+ * @param pinID The unique ID that this pin is referred to as
+ * @return (1 = High, 0 = Low)
+ */
+int16_t Pin_Get_Latch(int16_t pinID);
 
 #endif	/* PINS_H */
